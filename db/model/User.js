@@ -4,7 +4,10 @@ const path = 'mysql://root:root@localhost:3306/fesp_backend';
 const sequelize = new Sequelize(path);
 
 let User = sequelize.define('user',{
-    email: Sequelize.STRING,
+    email: {
+        type: Sequelize.STRING,
+        unique: true
+    },
     password: Sequelize.STRING,
     first_name: Sequelize.STRING,
     last_name: Sequelize.STRING
