@@ -15,10 +15,7 @@ let User = sequelize.define('user',{
 
 User.sync().then(() => {
     console.log('new table created')
-})  
-// .finally(() => {
-//     sequelize.close()
-// })
+})
 // sync 相當於把model跟db同步
 
 module.exports = User;
