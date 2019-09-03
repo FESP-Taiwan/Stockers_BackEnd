@@ -10,6 +10,7 @@ const typeDefs = gql`
     test: Boolean
   }
 `
+
 const resolvers = {
     Query: {
       hello: () => 'world'
@@ -17,9 +18,9 @@ const resolvers = {
     Mutation: {
       test: () => true
     }
-  }
+}
 
 module.exports = {
-typeDefs: [typeDefs, userSchema.typeDefs],
-resolvers: [resolvers, userSchema.resolvers]
+  typeDefs: [typeDefs, userSchema.typeDefs],
+  resolvers: [resolvers, userSchema.resolvers]
 }

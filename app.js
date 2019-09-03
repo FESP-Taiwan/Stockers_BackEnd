@@ -1,4 +1,4 @@
-const { ApolloServer, gql } = require('apollo-server-express');
+const { ApolloServer } = require('apollo-server-express');
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
@@ -7,7 +7,7 @@ const { typeDefs, resolvers } = require('./schemas/index');
 require('dotenv').config()
 const passport = require('passport');
 const fbStrategy = require('passport-facebook');
-const { User, OauthUser } = require('./db/model/User');
+const { OauthUser } = require('./db/model/User');
 const SECRET = process.env.SECRET;
 const PORT = process.env.PORT || 5000;
 
@@ -21,23 +21,33 @@ passport.use(
             clientSecret: process.env.FB_CLIENT_SECRET,
             callbackURL: process.env.FB_CALLBACK_URL
         },
+        
         async (accessToken, refreshToken, profile, cb) => {
-            const user = await OauthUser.findOne({
-                where: {
-                    id: profile.id
-                }
-            });
-            if(user) {
-                cb(null, user);
-            }else {
-                let oauthUser = await OauthUser.build({
-                    name: 'hello'
+            try{
+                const user = await OauthUser.findOne({
+                    where: {
+                        fbId: profile.id
+                    }
                 });
-                const savedoauthUser = await oauthUser.save();
-                cb(null, savedoauthUser,accessToken)
+                
+                if(user) {
+                    cb(null, [user,accessToken]);
+                }else {
+
+                    let oauthUser = await OauthUser.build({
+                        fbId: profile.id,
+                        name: profile.displayName
+                    });
+
+                    const savedoauthUser = await oauthUser.save();
+                    cb(null, [savedoauthUser,accessToken])
+                }
+                
+                cb(null, [profile,accessToken])
+
+            } catch(err) {
+                console.log(err)
             }
-            
-            cb(null, [profile,accessToken])
         }
     )
 );
@@ -78,9 +88,9 @@ app.get('/test',(req,res) => {
 app.get('/fblogin', passport.authenticate('facebook',{authType: 'reauthenticate'}));
 app.get('/auth/facebook/callback',passport.authenticate('facebook', { failureRedirect: '/test' }),
     async (req, res) => {
-        console.log(req.user[0])
+        const username = req.user[0].dataValues.name;
         const token = req.user[1];
-        res.send(token)
+        res.json({username,token})
     })
 
 app.get('/logout', function(req, res){

@@ -3,6 +3,7 @@ const Sequelize = require('sequelize');
 const path = 'mysql://root:root@localhost:3306/fesp_backend';
 const sequelize = new Sequelize(path);
 
+
 let User = sequelize.define('user',{
     email: {
         type: Sequelize.STRING,
@@ -16,13 +17,19 @@ let User = sequelize.define('user',{
     collate: 'utf8mb4_general_ci'
   })
 
+
 let OauthUser = sequelize.define('Oauthuser',{
+   fbId: {
+      type: Sequelize.STRING,
+      primaryKey: true
+   },
    name: Sequelize.STRING
 },{
     charset: 'utf8mb4',
     collate: 'utf8mb4_general_ci'
   })
 
+  
 User.sync().then(() => {
     console.log('user table created');
 })
