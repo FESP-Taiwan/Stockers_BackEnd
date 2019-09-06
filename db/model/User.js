@@ -19,7 +19,7 @@ let User = sequelize.define('user',{
 
 
 let OauthUser = sequelize.define('Oauthuser',{
-   fbId: {
+   userId: {
       type: Sequelize.STRING,
       primaryKey: true
    },

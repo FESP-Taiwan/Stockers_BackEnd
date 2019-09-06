@@ -7,6 +7,7 @@ const { typeDefs, resolvers } = require('./schemas/index');
 require('dotenv').config()
 const passport = require('passport');
 const fbStrategy = require('passport-facebook');
+const gitHubStrategy = require('passport-github').Strategy;
 const { OauthUser } = require('./db/model/User');
 const SECRET = process.env.SECRET;
 const PORT = process.env.PORT || 5000;
@@ -26,7 +27,7 @@ passport.use(
             try{
                 const user = await OauthUser.findOne({
                     where: {
-                        fbId: profile.id
+                        userId: profile.id
                     }
                 });
                 
@@ -35,7 +36,7 @@ passport.use(
                 }else {
 
                     let oauthUser = await OauthUser.build({
-                        fbId: profile.id,
+                        userId: profile.id,
                         name: profile.displayName
                     });
 
@@ -51,6 +52,40 @@ passport.use(
         }
     )
 );
+
+passport.use(new gitHubStrategy({
+    clientID: process.env.GITHUB_CLIENT_ID,
+    clientSecret: process.env.GITHUB_CLIENT_SECRET,
+    callbackURL: process.env.GITHUB_CALLBACK_URL
+  },
+  async (accessToken, refreshToken, profile, cb) => {
+    try{
+        const user = await OauthUser.findOne({
+            where: {
+                userId: profile.id
+            }
+        });
+        
+        if(user) {
+            cb(null, [user,accessToken]);
+        }else {
+
+            let oauthUser = await OauthUser.build({
+                userId: profile.id,
+                name: profile.displayName
+            });
+
+            const savedoauthUser = await oauthUser.save();
+            cb(null, [savedoauthUser,accessToken])
+        }
+        
+        cb(null, [profile,accessToken])
+    } catch(err) {
+        console.log(err);
+    }
+  }
+));
+
 passport.serializeUser(function(user, done) {
     done(null, user);
   });
@@ -90,8 +125,16 @@ app.get('/auth/facebook/callback',passport.authenticate('facebook', { failureRed
     async (req, res) => {
         const username = req.user[0].dataValues.name;
         const token = req.user[1];
-        res.json({username,token})
+        res.json({username, token})
     })
+
+app.get('/githublogin', passport.authenticate('github', {authType: 'reauthenticate'}));
+app.get('/auth/github/callback', passport.authenticate('github', { failureRedirect: '/test' }),
+    async (req, res) => {
+    const username = req.user[0].dataValues.name;
+    const token = req.user[1];
+    res.json({username, token});
+});
 
 app.get('/logout', function(req, res){
     req.logout();
