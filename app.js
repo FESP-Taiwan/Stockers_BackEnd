@@ -7,7 +7,7 @@ const { typeDefs, resolvers } = require('./schemas/index');
 require('dotenv').config()
 const passport = require('passport');
 const fbStrategy = require('passport-facebook');
-const gitHubStrategy = require('passport-github').Strategy;
+const googleStrategy = require('passport-google-oauth20').Strategy;
 const { OauthUser } = require('./db/model/User');
 const SECRET = process.env.SECRET;
 const PORT = process.env.PORT || 5000;
@@ -53,12 +53,12 @@ passport.use(
     )
 );
 
-passport.use(new gitHubStrategy({
-    clientID: process.env.GITHUB_CLIENT_ID,
-    clientSecret: process.env.GITHUB_CLIENT_SECRET,
-    callbackURL: process.env.GITHUB_CALLBACK_URL
+passport.use(new googleStrategy({
+    clientID: process.env.GOOGLE_CLIENT_ID,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    callbackURL: process.env.GOOGLE_CALLBACK_URL
   },
-  async (accessToken, refreshToken, profile, cb) => {
+  async (accessToken, refreshToken, profile, cb)  => {
     try{
         const user = await OauthUser.findOne({
             where: {
@@ -128,13 +128,13 @@ app.get('/auth/facebook/callback',passport.authenticate('facebook', { failureRed
         res.json({username, token})
     })
 
-app.get('/githublogin', passport.authenticate('github', {authType: 'reauthenticate'}));
-app.get('/auth/github/callback', passport.authenticate('github', { failureRedirect: '/test' }),
-    async (req, res) => {
+app.get('/googlelogin', passport.authenticate('google', {authType: 'reauthenticate',scope: ['profile']}));
+app.get('/auth/google/callback', passport.authenticate('google', { failureRedirect: '/test' }),
+  async (req, res)  => {
     const username = req.user[0].dataValues.name;
     const token = req.user[1];
     res.json({username, token});
-});
+  });
 
 app.get('/logout', function(req, res){
     req.logout();
