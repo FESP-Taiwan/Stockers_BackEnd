@@ -1,75 +1,148 @@
-const { ApolloServer, gql } = require('apollo-server');
-const User = require('./db/model/User');
-
-const users = [
-    {
-        id: 1,
-        email: 'oldmo1@example.com',
-        password: 'asdf1234',
-        first_name: 'Harry1',
-        last_name: 'Mo'
-    },
-    {
-        id: 2,
-        email: 'oldmo2@example.com',
-        password: 'asdf1234',
-        first_name: 'Harry2',
-        last_name: 'Mo'
-    },
-    {
-        id: 3,
-        email: 'oldmo3@example.com',
-        password: 'asdf1234',
-        first_name: 'Harry3',
-        last_name: 'Mo'
-    }
-  ];
-const typeDefs = gql`
-    type User {
-        id: ID
-        email: String!
-        password: String!
-        first_name: String!
-        last_name: String!
-    }
-
-    type Query {
-        user: User!
-    }
-
-    type Mutation {
-        register(email: String!,password: String!, first_name: String!, last_name: String!): User
-        login(email: String!,password: String!): User
-    }
-`;
+const { ApolloServer } = require('apollo-server-express');
+const express = require('express');
+const cors = require('cors');
+const bodyParser = require('body-parser');
+const jwt = require('jsonwebtoken');
+const { typeDefs, resolvers } = require('./schemas/index');
+require('dotenv').config()
+const passport = require('passport');
+const fbStrategy = require('passport-facebook');
+const googleStrategy = require('passport-google-oauth20').Strategy;
+const { OauthUser } = require('./db/model/User');
+const SECRET = process.env.SECRET;
+const PORT = process.env.PORT || 5000;
 
 
-const resolvers = {
-    Query: {
-       
+const app = express();
 
-    },
-    Mutation: {
-        register(parent, args, ctx, info) {
-            const user = User.build({
-                email: args.email,
-                password: args.password,
-                first_name: args.first_name,
-                last_name: args.last_name
-            });
-            user.save().then(() => {
-                console.log('user register success')
-            }).catch(() => console.log('save fail'))
-            return user;
+passport.use(
+    new fbStrategy(
+        {
+            clientID: process.env.FB_CLIENT_ID,
+            clientSecret: process.env.FB_CLIENT_SECRET,
+            callbackURL: process.env.FB_CALLBACK_URL
+        },
+        
+        async (accessToken, refreshToken, profile, cb) => {
+            try{
+                const user = await OauthUser.findOne({
+                    where: {
+                        userId: profile.id
+                    }
+                });
+                
+                if(user) {
+                    cb(null, [user,accessToken]);
+                }else {
+
+                    let oauthUser = await OauthUser.build({
+                        userId: profile.id,
+                        name: profile.displayName
+                    });
+
+                    const savedoauthUser = await oauthUser.save();
+                    cb(null, [savedoauthUser,accessToken])
+                }
+                
+                cb(null, [profile,accessToken])
+
+            } catch(err) {
+                console.log(err)
+            }
         }
+    )
+);
+
+passport.use(new googleStrategy({
+    clientID: process.env.GOOGLE_CLIENT_ID,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    callbackURL: process.env.GOOGLE_CALLBACK_URL
+  },
+  async (accessToken, refreshToken, profile, cb)  => {
+    try{
+        const user = await OauthUser.findOne({
+            where: {
+                userId: profile.id
+            }
+        });
+        
+        if(user) {
+            cb(null, [user,accessToken]);
+        }else {
+
+            let oauthUser = await OauthUser.build({
+                userId: profile.id,
+                name: profile.displayName
+            });
+
+            const savedoauthUser = await oauthUser.save();
+            cb(null, [savedoauthUser,accessToken])
+        }
+        
+        cb(null, [profile,accessToken])
+    } catch(err) {
+        console.log(err);
     }
-};
+  }
+));
+
+passport.serializeUser(function(user, done) {
+    done(null, user);
+  });
+  
+passport.deserializeUser(function(user, done) {
+    done(null, user);
+  });
+
+app.use(passport.initialize());
+app.use(cors());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
 
 const server = new ApolloServer({
     typeDefs,
-    resolvers
+    resolvers,
+    context: async ({req}) => {
+        const token = req.headers['token'];
+        if(token) {
+            try {
+                const user = await jwt.verify(token, SECRET);
+                return {user};
+            } catch(e) {
+                throw new Error('Your session expired. Sign in again');
+            }
+        }
+        return {};
+    }
 })
 
-server.listen().then(({ url }) => {
-    console.log(`server listening on ${url}`)
+app.get('/test',(req,res) => {
+    res.send('trest');
+})
+
+app.get('/fblogin', passport.authenticate('facebook',{authType: 'reauthenticate'}));
+app.get('/auth/facebook/callback',passport.authenticate('facebook', { failureRedirect: '/test' }),
+    async (req, res) => {
+        const username = req.user[0].dataValues.name;
+        const token = req.user[1];
+        res.json({username, token})
+    })
+
+app.get('/googlelogin', passport.authenticate('google', {authType: 'reauthenticate',scope: ['profile']}));
+app.get('/auth/google/callback', passport.authenticate('google', { failureRedirect: '/test' }),
+  async (req, res)  => {
+    const username = req.user[0].dataValues.name;
+    const token = req.user[1];
+    res.json({username, token});
+  });
+
+app.get('/logout', function(req, res){
+    req.logout();
+    res.redirect('/test');
+});
+
+server.applyMiddleware({ app });
+
+app.listen(PORT,() => {
+    console.log(`🚀 Server ready at http://localhost:5000${server.graphqlPath}`)
 })
