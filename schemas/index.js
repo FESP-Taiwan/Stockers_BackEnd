@@ -1,5 +1,6 @@
 const { gql }  = require('apollo-server-express');
 const userSchema = require('./user');
+const mainpageShame = require('./mainpage');
 
 const typeDefs = gql`
   type Query {
@@ -21,6 +22,6 @@ const resolvers = {
 }
 
 module.exports = {
-  typeDefs: [typeDefs, userSchema.typeDefs],
-  resolvers: [resolvers, userSchema.resolvers]
+  typeDefs: [typeDefs, userSchema.typeDefs, mainpageShame.typeDefs],
+  resolvers: [resolvers, userSchema.resolvers, mainpageShame.resolvers]
 }
