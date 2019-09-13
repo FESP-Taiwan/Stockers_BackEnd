@@ -25,3 +25,5 @@ module.exports = {
   typeDefs: [typeDefs, userSchema.typeDefs, mainpageShame.typeDefs],
   resolvers: [resolvers, userSchema.resolvers, mainpageShame.resolvers]
 }
+// mainpageShame.typeDefs
+//, mainpageShame.resolvers
