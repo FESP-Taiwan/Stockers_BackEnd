@@ -82,36 +82,36 @@ const { DateTimeResolver } = require('graphql-scalars');
 
 const typeDefs = gql`
 
-    # scalar DateTime
+    scalar DateTime
 
-    # type industrySticker {
-    #     id: ID
-    #     industryName: String!
-    #     industryRiseFall: Float!
-    #     monthRiseFallList: [monthRiseFall]!
-    # }
+    type industrySticker {
+        id: ID
+        industryName: String!
+        industryRiseFall: Float!
+        monthRiseFallList: [monthRiseFall]!
+    }
 
-    # type monthRiseFall {
-    #     id: ID
-    #     dataDate: DateTime！
-    #     value: Float!
-    #     unit: String!
-    # }
+    type monthRiseFall {
+        id: ID
+        dataDate: DateTime!
+        value: Float!
+        unit: String!
+    }
 
-    # type Query {
-    #     industryStickers: [industrySticker]!
-    # }
+    extend type Query {
+        industryStickers: String!
+    }
 
 `;
 
 
 const resolvers = {
-    // Query: {
-    //     industryStickers(parent, args, ctx, info) {
-          
-    //     }
-    // },
-    // DateTime: DateTimeResolver
+    Query: {
+        industryStickers(parent, args, ctx, info) {
+          return 'test';
+        }
+    },
+    DateTime: DateTimeResolver
 };
 
 module.exports = {
