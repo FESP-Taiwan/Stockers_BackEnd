@@ -10,11 +10,6 @@ const PORT = process.env.PORT || 5000;
 
 
 const app = express();
-
-app.get('/',(req,res)=>{
-    console.log(process.env.port,config.get('port'));
-    res.send("fdsfad");
-})
 app.use('/',require('./routes/login'));
 
 app.use(cors());
