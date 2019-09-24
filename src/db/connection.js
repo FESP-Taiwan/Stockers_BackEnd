@@ -1,6 +1,6 @@
 const Sequelize = require('sequelize');
 
-const path = 'mysql://root:root@localhost:3306;password:root/fesp_backend';
+const path = 'mysql://root:root@mysql;password:root/fesp_backend';
 const sequelize = new Sequelize(path)
 
 sequelize.authenticate().then(() => {

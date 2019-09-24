@@ -2,14 +2,13 @@ const passport = require('passport');
 const fbStrategy = require('passport-facebook');
 const googleStrategy = require('passport-google-oauth20').Strategy;
 const { OauthUser } = require('../db/model/User');
-const SECRET = process.env.SECRET;
-
+const config =require('config');
 passport.use(
     new fbStrategy(
         {
-            clientID: process.env.FB_CLIENT_ID,
-            clientSecret: process.env.FB_CLIENT_SECRET,
-            callbackURL: process.env.FB_CALLBACK_URL
+            clientID: config.get('login.fb.FB_CLIENT_ID'),
+            clientSecret:  config.get('login.fb.FB_CLIENT_SECRET'),
+            callbackURL:  config.get('login.fb.FB_CALLBACK_URL')
         },
 
         async (accessToken, refreshToken, profile, cb) => {
@@ -44,9 +43,9 @@ passport.use(
 
 
 passport.use(new googleStrategy({
-    clientID: process.env.GOOGLE_CLIENT_ID,
-    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: process.env.GOOGLE_CALLBACK_URL
+    clientID: config.get('login.google.GOOGLE_CLIENT_ID'),
+    clientSecret: config.get('login.google.GOOGLE_CLIENT_SECRET'),
+    callbackURL: config.get('login.google.GOOGLE_CALLBACK_URL')
   },
   async (accessToken, refreshToken, profile, cb)  => {
     try{

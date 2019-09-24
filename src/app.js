@@ -4,15 +4,18 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const jwt = require('jsonwebtoken');
 const { typeDefs, resolvers } = require('./schemas/index');
-require('dotenv').config()
+const config =require('config')// require('dotenv').config()
 
 const PORT = process.env.PORT || 5000;
 
 
 const app = express();
 
-
-app.use('/login',require('./routes/login'));
+app.get('/',(req,res)=>{
+    console.log(process.env.port,config.get('port'));
+    res.send("fdsfad");
+})
+app.use('/',require('./routes/login'));
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -25,7 +28,7 @@ const server = new ApolloServer({
         const token = req.headers['token'];
         if(token) {
             try {
-                const user = await jwt.verify(token, SECRET);
+                const user = await jwt.verify(token,config.get('SECRET'));
                 return {user};
             } catch(e) {
                 throw new Error('Your session expired. Sign in again');

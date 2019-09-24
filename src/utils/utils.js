@@ -1,8 +1,8 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
-require('dotenv').config();
-const SALT_ROUNDS = Number(process.env.SALT_ROUNDS);
-const SECRET = process.env.SECRET;
+const config =require('config');//require('dotenv').config();
+const SALT_ROUNDS = Number(config.get('SALT_ROUNDS'));
+const SECRET = config.get('SECRET');
 
 
 const hash = text => bcrypt.hash(text, SALT_ROUNDS);

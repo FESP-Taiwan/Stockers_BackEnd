@@ -2,8 +2,9 @@ const { gql } = require('apollo-server-express');
 const bcrypt = require('bcrypt');
 const { hash, createToken } = require('../utils/utils');
 const {User} = require('../db/model/User');
-require('dotenv').config();
-const SALT_ROUNDS = Number(process.env.SALT_ROUNDS);
+const config =require('config')
+const SALT_ROUNDS = Number(config.get('SALT_ROUNDS'));
+
 
 
 const typeDefs = gql`
