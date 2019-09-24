@@ -1,11 +1,18 @@
 module.exports={
     port:5000,
-    mysql:{
-        host:'rds',//aws rds
-        port:3306,
-        username:'dev',
-        password:'dev',
-        database:'fesp_backend'
+    mysql: {
+        "database": "rds",//asw
+        "username": "dev",
+        "password": "dev"
+    },
+    mysqlCon: {
+        "host": "mysql",
+        "dialect": "mysql",
+        "pool": {
+            "max": 5,
+            "min": 0,
+            "idle": 10000
+        }
     },
     SECRET:"testsecret",
     SALT_ROUNDS:8,

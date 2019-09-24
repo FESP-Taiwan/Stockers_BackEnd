@@ -1,8 +1,7 @@
 const Sequelize = require('sequelize');
-
-const path = 'mysql://root:root@mysql/fesp_backend';
-const sequelize = new Sequelize(path);
-
+const config =require('config')
+const {database,username,password}=config.get('mysql');
+const sequelize = new Sequelize( database,username,password,{...config.get('mysqlCon')});
 
 let User = sequelize.define('user',{
     email: {

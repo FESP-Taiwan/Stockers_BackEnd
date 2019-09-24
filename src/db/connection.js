@@ -1,8 +1,7 @@
 const Sequelize = require('sequelize');
-
-const path = 'mysql://root:root@mysql;password:root/fesp_backend';
-const sequelize = new Sequelize(path)
-
+const config =require('config')
+const {database,username,password}=config.get('mysql');
+const c = new Sequelize( database,username,password,{...config.get('mysqlCon')});
 sequelize.authenticate().then(() => {
     console.log('Connection established successfully.');
   }).catch(err => {
