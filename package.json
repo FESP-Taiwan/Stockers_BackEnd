@@ -7,7 +7,7 @@
     "start": "node src/app.js",
     "dev": "nodemon src/app.js",
     "start:prod": "cross-env NODE_ENV=prod pm2 start pm2.js src/app.js",
-    "fontend": "docker-compose up -d --build",
+    "fontend": "docker-compose  up -d --build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

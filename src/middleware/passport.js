@@ -20,7 +20,7 @@ passport.use(
                 });
 
                 if(user) {
-                    cb(null, [user,accessToken]);
+                    return  cb(null, [user,accessToken]);
                 }else {
 
                     let oauthUser = await OauthUser.build({
@@ -29,10 +29,10 @@ passport.use(
                     });
 
                     const savedoauthUser = await oauthUser.save();
-                    cb(null, [savedoauthUser,accessToken])
+                    return  cb(null, [savedoauthUser,accessToken])
                 }
 
-                cb(null, [profile,accessToken])
+                return cb(null, [profile,accessToken])
 
             } catch(err) {
                 console.log(err)
@@ -56,7 +56,7 @@ passport.use(new googleStrategy({
         });
 
         if(user) {
-            cb(null, [user,accessToken]);
+           return cb(null, [user,accessToken]);
         }else {
 
             let oauthUser = await OauthUser.build({
@@ -65,10 +65,10 @@ passport.use(new googleStrategy({
             });
 
             const savedoauthUser = await oauthUser.save();
-            cb(null, [savedoauthUser,accessToken])
+            return  cb(null, [savedoauthUser,accessToken])
         }
 
-        cb(null, [profile,accessToken])
+        return cb(null, [profile,accessToken])
     } catch(err) {
         console.log(err);
     }
