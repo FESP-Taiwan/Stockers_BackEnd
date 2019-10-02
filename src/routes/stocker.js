@@ -78,16 +78,66 @@ router.post('/update',tools.info,(req,res)=>{
     })
 })
 router.get('/list_collections',(req,res)=>{
-    var src = req.body || req.query;
+    var src = req.query;
     var db_name = src.db_name;
-    var collection_name = src.collection_name;
+    // var collection_name = src.collection_name;
     db.list_collections(db_name).then(ret=>{
         api_log("All collections:");
         res.json(ret.map(d=>{
-            api_log(JSON.stringify(d));
-            return JSON.stringify(d)
+            api_log(JSON.stringify(d.ns));
+            return JSON.stringify(d.idIndex.ns)
            }));
     })
  });
 
+router.get('/mainpage',(req,res)=>{
+    var result = "";
+    db.mainpage()
+    .then(data=>{
+          var result=[];
+          for(let i = 0;i<data.length;i++){
+              var id = data[i]._id;
+              var recent_3m_dif = [];
+              for(let j = 0;j<3;j++){
+                  recent_3m_dif.push({
+                      id:`${data[i]._id}_${j}`,
+                      diff:data[0].recent_3m_dif[j],
+                      date:data[0].date[j],
+                      unit:"K $NTD"
+                  })
+              }
+              result.push({
+                  _id:data[i]._id,
+                  recent_3m_dif: recent_3m_dif
+              })
+          }
+        res.json(result);
+       })   
+       .catch(err=>{
+           console.log(err);
+           res.json(err);
+       })
+})
+
+function syntaxHighlight(json) {
+    if (typeof json != 'string') {
+         json = JSON.stringify(json, undefined, 2);
+    }
+    json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
+        var cls = 'number';
+        if (/^"/.test(match)) {
+            if (/:$/.test(match)) {
+                cls = 'key';
+            } else {
+                cls = 'string';
+            }
+        } else if (/true|false/.test(match)) {
+            cls = 'boolean';
+        } else if (/null/.test(match)) {
+            cls = 'null';
+        }
+        return '<span class="' + cls + '">' + match + '</span>';
+    });
+}
 module.exports = router;

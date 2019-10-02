@@ -1,8 +1,8 @@
 const mongo = require('mongodb').MongoClient;
-const url = "mongodb://localhost:27017/";
-// const url = 'mongodb+srv://py_scrapy:scrapy@balancesheetreport-wo30d.mongodb.net/test?retryWrites=true&w=majority'
-// const db_name = "Report"
-const db_name = "stocker"
+// const url = "mongodb://localhost:27017/";
+const url = 'mongodb+srv://py_scrapy:scrapy@balancesheetreport-wo30d.mongodb.net/test?retryWrites=true&w=majority'
+const db_name = "Report"
+// const db_name = "stocker"
 // const testdata = require('../../tests/testdata');
 
 function log(str){
@@ -55,7 +55,7 @@ function where(db_name, payload){
     var search_params = filter(payload.data);
     log(`Search in DB: \" ${db_name}\" collection: \"${payload.collection_name}\" query:${JSON.stringify(search_params)}`);
     db_obj = client.db(db_name);
-    return db_obj.collection(payload.collection_name).find(search_params).toArray();
+    return db_obj.collection(payload.collection_name).find(search_params).limit(10).toArray();
 }
 function get_all(db_name, collection_name){
     log(`Connected to database: ${db_name}`);
@@ -68,12 +68,50 @@ function insert(db_name,payload){
     db_obj = client.db(db_name);
     return db_obj.collection(payload.collection_name).insertOne(payload.data);
 }
+
 function update(db_name,payload){
     log(`Update ${JSON.stringify(payload)}`);
     var update_params = payload.data.to;
     delete payload.data.to;
     db_obj = client.db(db_name);
     return db_obj.collection(payload.collection_name).updateOne(payload.data,{$set:update_params});
+}
+
+function fetchmainpage(){
+    db_obj = client.db("StockPrice");
+     var d = new Date();
+    d.setMonth(d.getMonth() - 3); //
+    console.log(d);
+    db_obj.collection("twse").find({date:{$gte:d}}).toArray()
+    .then(data=>{
+        console.log(JSON.stringify(data));
+        return data;
+    })
+    .catch(err=>{
+        console.log(err)
+        return err;
+        }
+    );
+}
+
+
+function mainpage(){
+    db_obj = client.db("StockPrice");
+    return db_obj.collection("twse").aggregate([ 
+        {$sort:{"date":-1}}
+        ,{
+            $group:{
+              _id : "$stockno"
+              ,rec_diff:{$push:"$diff"}
+              ,date:{$push:"$date"}
+          } 
+        }
+        ,{$project:{
+            _id:1,
+            recent_3m_dif:{$slice:["$rec_diff",3]} ,
+            date:{$slice:["$date",3]}
+          }
+        }]).toArray()
 }
 
 
@@ -85,5 +123,6 @@ module.exports = {
    where,
    createCollection,
    dropCollection,
-   update
+   update,
+   mainpage,
 };
