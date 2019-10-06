@@ -12,6 +12,7 @@ const PORT = process.env.PORT || 5000;
 const app = express();
 app.get('/',(req,res)=>{res.send('<a href="http://localhost:5000/test">click me</a>')})
 app.use('/',require('./routes/login'));
+app.use('/modules',require('./routes/userModules'))
 
 app.use(cors());
 app.use(bodyParser.json());

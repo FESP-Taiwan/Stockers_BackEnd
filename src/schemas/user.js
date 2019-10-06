@@ -12,8 +12,7 @@ const typeDefs = gql`
         id: ID
         email: String!
         password: String!
-        first_name: String!
-        last_name: String!
+        name: String!
     }
 
     type Token {
@@ -25,7 +24,7 @@ const typeDefs = gql`
     }
 
     extend type Mutation {
-        signUp(email: String!,password: String!, first_name: String!, last_name: String!): User
+        signUp(email: String!,password: String!, name: String!): User
         logIn(email: String!,password: String!): Token
     }
 `;
@@ -45,8 +44,7 @@ const resolvers = {
             const user = await User.build({
                 email: args.email,
                 password: hashedPassword,
-                first_name: args.first_name,
-                last_name: args.last_name
+                name: args.name
             });
             const savedUser = await user.save();
             if(!savedUser) {

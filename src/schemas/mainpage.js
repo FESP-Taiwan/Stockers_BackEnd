@@ -11,20 +11,17 @@ const fakeData = [
       {
         id: 001,
         dataDate: "2018-10-10T10:10:10.000Z",
-        value: 14.78,
-        unit: '%'
+        value: 14.78
       },
       {
         id: 002,
         dataDate: "2018-10-10T10:10:10.000Z",
-        value: 14.20,
-        unit: '%'
+        value: 14.20
       },
       {
         id: 003,
         dataDate: "2018-10-10T10:10:10.000Z",
-        value: 11.78,
-        unit: '%'
+        value: 11.78
       }
     ]
   },
@@ -36,20 +33,17 @@ const fakeData = [
       {
         id: 004,
         dataDate: "2018-10-10T10:10:10.000Z",
-        value: 1.78,
-        unit: '%'
+        value: 1.78
       },
       {
         id: 005,
         dataDate: "2018-10-10T10:10:10.000Z",
-        value: 18.20,
-        unit: '%'
+        value: 18.20
       },
       {
         id: 006,
         dataDate: "2018-10-10T10:10:10.000Z",
-        value: 89.78,
-        unit: '%'
+        value: 89.78
       }
     ]
   },
@@ -61,20 +55,17 @@ const fakeData = [
       {
         id: 007,
         dataDate: "2018-10-10T10:10:10.000Z",
-        value: 14.78,
-        unit: '%'
+        value: 14.78
       },
       {
         id: 8,
         dataDate: "2018-10-10T10:10:10.000Z",
-        value: 15.20,
-        unit: '%'
+        value: 15.20
       },
       {
         id: 9,
         dataDate: "2018-10-10T10:10:10.000Z",
-        value: 5.78,
-        unit: '%'
+        value: 5.78
       }
     ]
   }
@@ -95,7 +86,6 @@ const typeDefs = gql`
         id: ID
         dataDate: DateTime!
         value: Float!
-        unit: String!
     }
 
     extend type Query {

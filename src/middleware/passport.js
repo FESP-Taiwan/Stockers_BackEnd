@@ -1,7 +1,7 @@
 const passport = require('passport');
 const fbStrategy = require('passport-facebook');
 const googleStrategy = require('passport-google-oauth20').Strategy;
-const { OauthUser } = require('../db/model/User');
+const { User } = require('../db/model/User');
 const config =require('config');
 passport.use(
     new fbStrategy(
@@ -13,9 +13,9 @@ passport.use(
 
         async (accessToken, refreshToken, profile, cb) => {
             try{
-                const user = await OauthUser.findOne({
+                const user = await User.findOne({
                     where: {
-                        userId: profile.id
+                        authId: profile.id
                     }
                 });
 
@@ -23,8 +23,8 @@ passport.use(
                     return  cb(null, [user,accessToken]);
                 }else {
 
-                    let oauthUser = await OauthUser.build({
-                        userId: profile.id,
+                    let oauthUser = await User.build({
+                        authId: profile.id,
                         name: profile.displayName
                     });
 
