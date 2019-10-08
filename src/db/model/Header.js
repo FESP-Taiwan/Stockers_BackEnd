@@ -5,11 +5,11 @@ const sequelize = new Sequelize(database, username, password, {
   ...config.get("mysqlCon")
 });
 
-let Chips = sequelize.define(
-  "chip",
+let Header = sequelize.define(
+  "header",
   {
-    parentName: Sequelize.STRING,
-    chipName: Sequelize.STRING
+    headerName: Sequelize.STRING,
+    moduleId: Sequelize.INTEGER
   },
   {
     charset: "utf8mb4",
@@ -17,8 +17,8 @@ let Chips = sequelize.define(
   }
 );
 
-Chips.sync().then(() => {
-  console.log("Chips table created");
+Header.sync().then(() => {
+  console.log("Header table created");
 });
 
-module.exports = { Chips };
+module.exports = { Header };
