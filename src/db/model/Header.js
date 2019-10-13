@@ -9,7 +9,8 @@ let Header = sequelize.define(
   "header",
   {
     headerName: Sequelize.STRING,
-    moduleId: Sequelize.INTEGER
+    moduleId: Sequelize.INTEGER,
+    columnId: Sequelize.INTEGER
   },
   {
     charset: "utf8mb4",
@@ -22,3 +23,4 @@ Header.sync().then(() => {
 });
 
 module.exports = { Header };
+``;

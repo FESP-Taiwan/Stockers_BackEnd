@@ -89,10 +89,32 @@ router.get("/chips", async (req, res) => {
   }
 });
 
-router.post(
-  "/updateModuleHeaderChips/:uid",
-  checkToken,
-  async (req, res) => {}
-);
+router.post("/updateModuleHeaderChips/:moduleId", async (req, res) => {
+  await Header.destroy({
+    where: {
+      moduleId: req.body.moduleId
+    }
+  });
+
+  let promises = [];
+
+  req.body.headerChips.forEach(header => {
+    promises.push(
+      Header.build({
+        headerName: header.headerName,
+        moduleId: req.body.moduleId
+      }).save()
+    );
+  });
+
+  Promise.all(promises).then(async () => {
+    const updatedHeader = await Header.findAll({
+      where: {
+        moduleId: req.body.moduleId
+      }
+    });
+    res.send(updatedHeader);
+  });
+});
 
 module.exports = router;
