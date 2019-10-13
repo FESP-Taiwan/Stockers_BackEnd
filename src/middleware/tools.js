@@ -1,7 +1,7 @@
 function info(req,res,next){
+    res.header("Content-Type",'application/json');
     console.log("Path: "+req.path);
-    console.log("Body: ");
-    console.log(req.body);
+    console.log(`Body: ${((req.body.size>0))? req.body:"empty"}`);
     next();
 }
 function packdata(params){
@@ -13,7 +13,13 @@ function packdata(params){
         data: params
     };
 }
+function isEmpty(json){
+    // for(var key in json){
+    //     if(json[key])
+    // }
+}
 module.exports = {
     info,
-    packdata
+    packdata,
+    isEmpty,
 }

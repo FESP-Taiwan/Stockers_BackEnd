@@ -29,7 +29,7 @@ router.get('/all',tools.info,(req,res)=>{
       .catch(err=>{
           res.json(err);
       })
-    
+
 });
 
 router.post('/insert',tools.info,(req,res)=>{
@@ -60,7 +60,7 @@ router.get('/search',tools.info,(req,res)=>{
             console.log(ret);
             res.json(err);
         })
-    
+
 });
 router.post('/update',tools.info,(req,res)=>{
     api_log(`Updating ${JSON.stringify(req.body)}`)
@@ -90,54 +90,22 @@ router.get('/list_collections',(req,res)=>{
     })
  });
 
-router.get('/mainpage',(req,res)=>{
-    var result = "";
-    db.mainpage()
-    .then(data=>{
-          var result=[];
-          for(let i = 0;i<data.length;i++){
-              var id = data[i]._id;
-              var recent_3m_dif = [];
-              for(let j = 0;j<3;j++){
-                  recent_3m_dif.push({
-                      id:`${data[i]._id}_${j}`,
-                      diff:data[0].recent_3m_dif[j],
-                      date:data[0].date[j],
-                      unit:"K $NTD"
-                  })
-              }
-              result.push({
-                  _id:data[i]._id,
-                  recent_3m_dif: recent_3m_dif
-              })
-          }
-        res.json(result);
-       })   
-       .catch(err=>{
-           console.log(err);
-           res.json(err);
-       })
+router.get('/industryStickers',tools.info,(req,res)=>{
+    db.industryStickers(res);
 })
 
-function syntaxHighlight(json) {
-    if (typeof json != 'string') {
-         json = JSON.stringify(json, undefined, 2);
-    }
-    json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-    return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
-        var cls = 'number';
-        if (/^"/.test(match)) {
-            if (/:$/.test(match)) {
-                cls = 'key';
-            } else {
-                cls = 'string';
-            }
-        } else if (/true|false/.test(match)) {
-            cls = 'boolean';
-        } else if (/null/.test(match)) {
-            cls = 'null';
-        }
-        return '<span class="' + cls + '">' + match + '</span>';
-    });
-}
+router.get('/industry',tools.info,(req,res)=>{
+    db.industry(res);
+})
+
+router.get('/stockpage_1',tools.info,(req,res)=>{
+    db.stockpage_1()
+    .then(data=>{
+        res.send(JSON.stringify(data, null, 4));
+    })
+    .catch(err=>{
+        res.json(err);
+    })
+})
+
 module.exports = router;
