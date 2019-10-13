@@ -7,45 +7,45 @@ const { User } = require("../db/model/User");
 const { Stocks } = require("../db/model/Stocks");
 const { Header } = require("../db/model/Header");
 
-router.get("/test", async (req, res) => {
-  const modules = await Modules.build({
-    name: "test module!",
-    userId: 1
-  });
-  const savedModule = await modules.save();
-  res.send(savedModule);
-});
+// router.get("/test", async (req, res) => {
+//   const modules = await Modules.build({
+//     name: "test module!",
+//     userId: 1
+//   });
+//   const savedModule = await modules.save();
+//   res.send(savedModule);
+// });
 
-router.get("/test2", async (req, res) => {
-  const header = await Header.build({
-    headerName: "test header!",
-    moduleId: 1
-  });
-  const savedHeader = await header.save();
-  res.send(savedHeader);
-});
+// router.get("/test2", async (req, res) => {
+//   const header = await Header.build({
+//     headerName: "test header!",
+//     moduleId: 1
+//   });
+//   const savedHeader = await header.save();
+//   res.send(savedHeader);
+// });
 
-router.get("/test3", async (req, res) => {
-  const header = await Header.build({
-    headerName: "test header2!",
-    moduleId: 1
-  });
-  const savedHeader = await header.save();
-  res.send(savedHeader);
-});
+// router.get("/test3", async (req, res) => {
+//   const header = await Header.build({
+//     headerName: "test header2!",
+//     moduleId: 1
+//   });
+//   const savedHeader = await header.save();
+//   res.send(savedHeader);
+// });
 
-router.get("/test4", async (req, res) => {
-  const stock = await Stocks.build({
-    companyName: "verybuy",
-    companyNumber: 20,
-    calculatedValue: 40.5,
-    alertion: "買",
-    rate: 20.6,
-    moduleId: 1
-  });
-  const savedStock = await stock.save();
-  res.send(savedStock);
-});
+// router.get("/test4", async (req, res) => {
+//   const stock = await Stocks.build({
+//     companyName: "verybuy",
+//     companyNumber: 20,
+//     calculatedValue: 40.5,
+//     alertion: "買",
+//     rate: 20.6,
+//     moduleId: 1
+//   });
+//   const savedStock = await stock.save();
+//   res.send(savedStock);
+// });
 
 router.get("/userModules/:uid", checkToken, async (req, res) => {
   try {
