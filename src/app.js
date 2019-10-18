@@ -6,7 +6,7 @@ const jwt = require('jsonwebtoken');
 const { typeDefs, resolvers } = require('./schemas/index');
 const config =require('config')// require('dotenv').config()
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5001;
 
 
 const app = express();
@@ -41,5 +41,5 @@ app.get('/test',(req,res) => {
 server.applyMiddleware({ app });
 
 app.listen(PORT,() => {
-    console.log(`🚀 Server ready at http://localhost:5000${server.graphqlPath}`)
+    console.log(`🚀 Server ready at http://localhost:${PORT}${server.graphqlPath}`)
 })

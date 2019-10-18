@@ -98,14 +98,12 @@ router.get('/industry',tools.info,(req,res)=>{
     db.industry(res);
 })
 
-router.get('/stockpage_1',tools.info,(req,res)=>{
-    db.stockpage_1()
-    .then(data=>{
-        res.send(JSON.stringify(data, null, 4));
-    })
-    .catch(err=>{
-        res.json(err);
-    })
+router.get('/stockpage_1/:ticker_id',tools.info,(req,res)=>{
+    console.log(req.params.ticker_id)
+    db.stockpage_1(req.params.ticker_id,res);
+})
+router.get('/det',tools.info,(req,res)=>{
+    db.det(res);
 })
 
 module.exports = router;
