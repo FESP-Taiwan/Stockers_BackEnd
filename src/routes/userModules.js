@@ -117,4 +117,16 @@ router.post("/updateModuleHeaderChips/:moduleId", async (req, res) => {
   });
 });
 
+router.post("/updateCommentInfo", checkToken, async (req, res) => {
+  try {
+    const result = await Modules.update(
+      { comment: req.body.commentInfo },
+      { where: { id: req.body.moduleId } }
+    );
+    res.send(result);
+  } catch (err) {
+    res.send("something go wrong");
+  }
+});
+
 module.exports = router;
