@@ -177,7 +177,7 @@ function industry(res){
       renderJson(res,err);
   })
 }
-async function stockpage_1(ticker_id,res){
+async function individualStock(ticker_id,res){
     var d = new Date();
     d.setFullYear(d.getFullYear()-2);
     try{
@@ -282,7 +282,7 @@ async function stockpage_1(ticker_id,res){
                 // }
             ]
         ).toArray()
-        comprehensiveData = await comprehensive[0].data
+        comprehensiveData = await comprehensive
 
         var balanceSheet = await client.db("Report").collection("BalanceSheet").aggregate([
             // {$limit:3},
@@ -408,7 +408,7 @@ async function stockpage_1(ticker_id,res){
             //     _id:"$_id"
             // }}
         ]).toArray()
-        var balanceSheetData = balanceSheet[0].data
+        var balanceSheetData = balanceSheet
 
         var cashflow = await client.db("Report").collection("CashFlow").aggregate([
             {$match:{
@@ -458,27 +458,6 @@ async function stockpage_1(ticker_id,res){
     catch(rejected){
         renderJson(res, rejected);
     }
-    // return db_obj.collection("BalanceSheet").find({}).toArray();
-}
-
-async function det(res){
-    try {
-        //StockPrice 2330 2891
-        //TickerPool 2330x 2891x
-        //Report::BalanceSheet
-        // var data = await client.db("TickerPool").collection("twse").deleteMany({ticker:2330})
-        var data = await client.db("Dividend").collection("histock").find({ticker:2891}).toArray()
-        // .aggregate([
-        //     {$project:{
-        //         _id:"$_id"
-        //     }}
-        // ])
-        renderJson(res, await data);
-        clog(data);
-     } catch (e) {
-        renderJson(res, await e);
-        clog(e);
-     }
 }
 
 module.exports = {
@@ -492,6 +471,5 @@ module.exports = {
    update,
    industryStickers,
    industry,
-   stockpage_1,
-   det
+   individualStock,
 };

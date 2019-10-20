@@ -15,7 +15,8 @@ router.get('/',(req,res)=>{
     res.set('Content-Type', 'text/html');
     res.status(200).send("Api is on");
 });
-
+// GET
+// stocker/all?db_name=TickerPool&collection_name=twse
 router.get('/all',tools.info,(req,res)=>{
     console.log(`${JSON.stringify(req.query)}`)
     var db_name = req.query.db_name;
@@ -32,6 +33,9 @@ router.get('/all',tools.info,(req,res)=>{
 
 });
 
+
+// POST
+// stocker/insert
 router.post('/insert',tools.info,(req,res)=>{
     var src = req.body
     var db_name = src.db_name;
@@ -48,6 +52,20 @@ router.post('/insert',tools.info,(req,res)=>{
     })
 });
 
+// GET
+// 可以用query 或是 body
+// query:
+// stocker/search?db_name=TickerPool&collection_name=twse&ticker=2330 或是其他條件
+
+// body:
+//  {
+//   db_name: "TickerPoll"
+//   collection_name: "twse"
+//   ticker: 2330
+//  }
+
+// 註： db_name 跟collection_name 一定要附
+
 router.get('/search',tools.info,(req,res)=>{
     var src = req.body || req.query;
     var db_name = src.db_name;
@@ -62,10 +80,19 @@ router.get('/search',tools.info,(req,res)=>{
         })
 
 });
+
+// POST
+// stocker/update
+// body:
+//  {
+//   db_name: "TickerPoll"
+//   collection_name: "twse"
+//   ticker: 2330
+//  }
+
 router.post('/update',tools.info,(req,res)=>{
     api_log(`Updating ${JSON.stringify(req.body)}`)
-      var db_name = req.body.db_name;
-    var collection_name = req.body.collection_name;
+    var db_name = req.body.db_name;
     var update_payload = tools.packdata(req.body);
     db.update(db_name,update_payload)
     .then(ret=>{
@@ -77,10 +104,14 @@ router.post('/update',tools.info,(req,res)=>{
       res.json(err);
     })
 })
+
+// GET
+// query:
+// stocker/list_collections?db_name=TickerPool
+
 router.get('/list_collections',(req,res)=>{
     var src = req.query;
     var db_name = src.db_name;
-    // var collection_name = src.collection_name;
     db.list_collections(db_name).then(ret=>{
         api_log("All collections:");
         res.json(ret.map(d=>{
@@ -90,20 +121,28 @@ router.get('/list_collections',(req,res)=>{
     })
  });
 
+// 靜態第一個
+// GET
+// stocker/industryStickers
+
 router.get('/industryStickers',tools.info,(req,res)=>{
     db.industryStickers(res);
 })
 
-router.get('/industry',tools.info,(req,res)=>{
-    db.industry(res);
-})
+// 靜態第二個
+// 因為DB沒有上中下游的資料就刪掉第二個了
+// router.get('/industry',tools.info,(req,res)=>{
+//     db.industry(res);
+// })
 
-router.get('/stockpage_1/:ticker_id',tools.info,(req,res)=>{
-    console.log(req.params.ticker_id)
-    db.stockpage_1(req.params.ticker_id,res);
-})
-router.get('/det',tools.info,(req,res)=>{
-    db.det(res);
+
+// 靜態第三個
+// GET
+// stocker/industryStickers
+
+router.get('/individualStock/:company_no',tools.info,(req,res)=>{
+    console.log(req.params.company_no)
+    db.individualStock(req.params.company_no,res);
 })
 
 module.exports = router;
