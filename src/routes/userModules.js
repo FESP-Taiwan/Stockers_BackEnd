@@ -57,10 +57,6 @@ router.get("/userModules/:uid", checkToken, async (req, res) => {
         {
           association: Modules.hasMany(Header, { foreignKey: "moduleId" }),
           model: Header
-        },
-        {
-          association: Modules.hasMany(Stocks, { foreignKey: "moduleId" }),
-          model: Stocks
         }
       ]
     });

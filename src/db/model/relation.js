@@ -4,5 +4,5 @@ const { User } = require("./User");
 const { Header } = require("./Header");
 
 User.hasMany(Modules, { foreignKey: "userId" });
-Modules.hasMany(Stocks, { foreignKey: "moduleId" });
+User.hasMany(Stocks, { foreignKey: "userId" });
 Modules.hasMany(Header, { foreignKey: "moduleId" });

@@ -13,7 +13,7 @@ let Stocks = sequelize.define(
     calculatedValue: Sequelize.FLOAT,
     alertion: Sequelize.STRING,
     rate: Sequelize.FLOAT,
-    moduleId: Sequelize.INTEGER
+    userId: Sequelize.INTEGER
   },
   {
     charset: "utf8mb4",

@@ -9,11 +9,13 @@ let Modules = sequelize.define(
   "module",
   {
     name: Sequelize.STRING,
+    subName: Sequelize.STRING,
     userId: {
       type: Sequelize.INTEGER,
       allowNull: true
     },
-    comment: Sequelize.JSON
+    comment: Sequelize.JSON,
+    usingStock: Sequelize.ARRAY
   },
   {
     charset: "utf8mb4",
