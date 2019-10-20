@@ -138,7 +138,7 @@ router.get('/industryStickers',tools.info,(req,res)=>{
 
 // 靜態第三個
 // GET
-// stocker/industryStickers
+// stocker/individualStock/2330
 
 router.get('/individualStock/:company_no',tools.info,(req,res)=>{
     console.log(req.params.company_no)
