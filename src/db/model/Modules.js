@@ -15,7 +15,8 @@ let Modules = sequelize.define(
       allowNull: true
     },
     comment: Sequelize.JSON,
-    usingStock: Sequelize.ARRAY
+    usingStock: Sequelize.JSON,
+    mathModule: Sequelize.JSON
   },
   {
     charset: "utf8mb4",

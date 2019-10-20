@@ -7,7 +7,7 @@
     "start": "node src/app.js",
     "dev": "nodemon src/app.js",
     "start:prod": "cross-env NODE_ENV=prod pm2 start pm2.js src/app.js",
-    "fontend": "docker-compose  up --build",
+    "frontend": "docker-compose  up --build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -32,14 +32,9 @@
     "passport-github": "^1.1.0",
     "passport-google-oauth": "^2.0.0",
     "passport-google-oauth20": "^2.0.0",
-<<<<<<< HEAD
     "sequelize": "^5.16.0",
     "uuid": "^3.3.3",
     "mongodb": "^3.3.2"
-=======
-    "sequelize": "^5.19.5",
-    "uuid": "^3.3.3"
->>>>>>> 254ce941d4e273152b6a628215613c2b95cd5be0
   },
   "devDependencies": {
     "nodemon": "^1.19.3"
