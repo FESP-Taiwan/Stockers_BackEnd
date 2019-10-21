@@ -9,10 +9,10 @@ const config = require("config"); // require('dotenv').config()
 const PORT = process.env.PORT || 5001;
 
 const app = express();
+app.use(cors());
 app.get('/',(req,res)=>{res.send('<a href="http://localhost:5000/test">click me</a>')})
 app.use('/',require('./routes/login'));
 app.use('/stocker',require('./routes/stocker'));
-app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.get("/", (req, res) => {
