@@ -10,6 +10,7 @@ router.use(bodyParser.urlencoded({extended : true}));
 function api_log(str){
     console.log(`[StockerApi]${str}`);
 }
+router.use(tools.info);
 
 router.get('/',(req,res)=>{
     res.set('Content-Type', 'text/html');
@@ -17,7 +18,7 @@ router.get('/',(req,res)=>{
 });
 // GET
 // stocker/all?db_name=TickerPool&collection_name=twse
-router.get('/all',tools.info,(req,res)=>{
+router.get('/all',(req,res)=>{
     console.log(`${JSON.stringify(req.query)}`)
     var db_name = req.query.db_name;
     var collection_name = req.query.collection_name;
@@ -36,7 +37,16 @@ router.get('/all',tools.info,(req,res)=>{
 
 // POST
 // stocker/insert
-router.post('/insert',tools.info,(req,res)=>{
+// body
+// {
+//   db_name:
+//   collection_name:
+//   key1:value1
+//   key2:value2
+//   ...
+// }
+
+router.post('/insert',(req,res)=>{
     var src = req.body
     var db_name = src.db_name;
     var collection_name = src.collection_name;
@@ -66,7 +76,7 @@ router.post('/insert',tools.info,(req,res)=>{
 
 // 註： db_name 跟collection_name 一定要附
 
-router.get('/search',tools.info,(req,res)=>{
+router.get('/search',(req,res)=>{
     var src = req.body || req.query;
     var db_name = src.db_name;
     db.where(db_name,tools.packdata(src))
@@ -90,7 +100,7 @@ router.get('/search',tools.info,(req,res)=>{
 //   ticker: 2330
 //  }
 
-router.post('/update',tools.info,(req,res)=>{
+router.post('/update',(req,res)=>{
     api_log(`Updating ${JSON.stringify(req.body)}`)
     var db_name = req.body.db_name;
     var update_payload = tools.packdata(req.body);
@@ -125,7 +135,7 @@ router.get('/list_collections',(req,res)=>{
 // GET
 // stocker/industryStickers
 
-router.get('/industryStickers',tools.info,(req,res)=>{
+router.get('/industryStickers',(req,res)=>{
     db.industryStickers(res);
 })
 
