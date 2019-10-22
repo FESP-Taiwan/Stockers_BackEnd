@@ -1,5 +1,6 @@
 function info(req,res,next){
     res.header("Content-Type",'application/json');
+    res.header("Access-Control-Allow-Origin",'*');
     console.log("Path: "+req.path);
     console.log(`Body: ${((req.body.size>0))? req.body:"empty"}`);
     next();
