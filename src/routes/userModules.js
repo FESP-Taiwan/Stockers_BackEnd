@@ -125,4 +125,16 @@ router.post("/updateCommentInfo", checkToken, async (req, res) => {
   }
 });
 
+router.post("/updateMathModuleInfo", checkToken, async (req, res) => {
+  try {
+    const result = await Modules.update(
+      { mathModule: req.body.mathModuleInfo },
+      { where: { id: req.body.moduleId } }
+    );
+    res.send(result);
+  } catch (err) {
+    res.send("something go wrong");
+  }
+});
+
 module.exports = router;
