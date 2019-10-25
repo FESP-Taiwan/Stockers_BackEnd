@@ -140,6 +140,7 @@ function industryStickers(res){
                 }
                 return({
                     stockno: doc._id,
+                    name:ticker[0].name,
                     industry_name: ticker[0].industry_type,
                     industry_gain: total_gain,
                     gain_diff: stock
@@ -151,8 +152,27 @@ function industryStickers(res){
             return r;
         })
 
-        Promise.all(proms).then((results) => {
-            res.send(JSON.stringify(results,null,2));
+        Promise.all(proms).then((unparsedRes) => {
+            var industry_types = [...new Set(unparsedRes.map(company=>{
+                return company.industry_name
+            }))]
+            var parsedRes = []
+            industry_types.forEach(industry_type=>{
+                var industry = {
+                    industry_type,
+                    companies: [...new Set(unparsedRes.map(company=>{
+                        if(company.industry_name==industry_type)
+                        return {
+                            stockNo:company.stockno,
+                            name:company.name,
+                            gain_diff:company.gain_diff
+                        }
+                    }))].filter(docAfterMap=> docAfterMap!=null)
+                }
+                parsedRes.push(industry);
+            })
+            console.log(parsedRes.length);
+            res.send(JSON.stringify(parsedRes,null,2));
         });
     })
     .catch(err=>{
