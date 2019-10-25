@@ -9,6 +9,10 @@ let Header = sequelize.define(
   "header",
   {
     headerName: Sequelize.STRING,
+    parentName: {
+      type: Sequelize.STRING,
+      allowNull: true
+    },
     moduleId: Sequelize.INTEGER,
     columnId: Sequelize.INTEGER,
     chipId: Sequelize.INTEGER
