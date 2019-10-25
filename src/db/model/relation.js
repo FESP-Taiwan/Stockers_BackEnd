@@ -6,5 +6,5 @@ const { Chips } = require("./Chip");
 
 User.hasMany(Modules, { foreignKey: "userId" });
 User.hasMany(Stocks, { foreignKey: "userId" });
-Modules.hasMany(Header, { foreignKey: "moduleId" });
 Chips.belongsTo(Header, { foreignKey: "chipId" });
+Modules.hasMany(Header, { foreignKey: "moduleId" });

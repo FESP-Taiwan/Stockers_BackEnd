@@ -20,7 +20,7 @@ let Header = sequelize.define(
 );
 
 Header.sync().then(() => {
-  console.log("Header table created");
+  console.log("Header table created!");
 });
 
 module.exports = { Header };
