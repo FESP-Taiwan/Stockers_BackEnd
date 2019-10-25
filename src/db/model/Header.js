@@ -10,7 +10,8 @@ let Header = sequelize.define(
   {
     headerName: Sequelize.STRING,
     moduleId: Sequelize.INTEGER,
-    columnId: Sequelize.INTEGER
+    columnId: Sequelize.INTEGER,
+    chipId: Sequelize.INTEGER
   },
   {
     charset: "utf8mb4",
