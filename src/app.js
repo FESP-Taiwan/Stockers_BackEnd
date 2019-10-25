@@ -10,11 +10,14 @@ const PORT = process.env.PORT || 5000;
 
 const app = express();
 app.use(cors());
-app.get('/',(req,res)=>{res.send('<a href="http://localhost:5000/test">click me</a>')})
-app.use('/',require('./routes/login'));
-app.use('/stocker',require('./routes/stocker'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
+app.get("/", (req, res) => {
+  res.send('<a href="http://localhost:5000/test">click me</a>');
+});
+app.use("/", require("./routes/login"));
+app.use("/stocker", require("./routes/stocker"));
+app.use("/modules", require("./routes/modules"));
 app.get("/", (req, res) => {
   res.send('<a href="http://localhost:5000/test">click me</a>');
 });
@@ -48,6 +51,8 @@ app.get("/seed", (req, res) => {
 });
 server.applyMiddleware({ app });
 
-app.listen(PORT,() => {
-    console.log(`🚀 Server ready at http://localhost:${PORT}${server.graphqlPath}`)
-})
+app.listen(PORT, () => {
+  console.log(
+    `🚀 Server ready at http://localhost:${PORT}${server.graphqlPath}`
+  );
+});

@@ -7,8 +7,9 @@
     "start": "node src/app.js",
     "dev": "nodemon src/app.js",
     "start:prod": "cross-env NODE_ENV=prod pm2 start pm2.js src/app.js",
-    "frontend": "docker-compose  up --build",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "frontend": "docker-compose  up --build --force-recreate",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "stop": "docker-compose down"
   },
   "keywords": [],
   "author": "",
