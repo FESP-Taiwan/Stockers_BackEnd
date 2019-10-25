@@ -42,6 +42,9 @@ router.put("/updateUserModules", async (req, res) => {
 module.exports = router;
 
 /*
+url:
+localhost:5000/modules/updateUserModules
+body:
 [
     {
         "moduleId": 2,
