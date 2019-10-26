@@ -7,60 +7,6 @@ const { User } = require("../db/model/User");
 const { Stocks } = require("../db/model/Stocks");
 const { Header } = require("../db/model/Header");
 
-// router.get("/test", async (req, res) => {
-//   const modules = await Modules.build({
-//     name: "test module!",
-//     subName: "subname",
-//     userId: 1,
-//     comment: {
-//       comment: "test"
-//     },
-//     usingStock: {
-//       stocks: ["stock1", "stock2"]
-//     },
-
-//     mathModule: {
-//       name: "test name",
-//       user: "test"
-//     }
-//   });
-//   const savedModule = await modules.save();
-//   res.send(savedModule);
-// });
-
-// router.get("/test2", async (req, res) => {
-//   const header = await Header.build({
-//     headerName: "test header!",
-//     moduleId: 1,
-//     columnId: 2,
-//     chipId: 1
-//   });
-//   const savedHeader = await header.save();
-//   res.send(savedHeader);
-// });
-
-// // router.get("/test3", async (req, res) => {
-// //   const header = await Header.build({
-// //     headerName: "test header2!",
-// //     moduleId: 1
-// //   });
-// //   const savedHeader = await header.save();
-// //   res.send(savedHeader);
-// // });
-
-// router.get("/test4", async (req, res) => {
-//   const stock = await Stocks.build({
-//     companyName: "verybuy",
-//     companyNumber: 20,
-//     calculatedValue: 40.5,
-//     alertion: "買",
-//     rate: 20.6,
-//     userId: 1
-//   });
-//   const savedStock = await stock.save();
-//   res.send(savedStock);
-// });
-
 router.get("/userModules/:uid", checkToken, async (req, res) => {
   try {
     const modules = await Modules.findAll({
@@ -75,7 +21,7 @@ router.get("/userModules/:uid", checkToken, async (req, res) => {
       ]
     });
 
-    res.send(modules);
+    res.status(200).send(modules);
   } catch {
     res.send({
       error: "Module not found"
@@ -83,10 +29,47 @@ router.get("/userModules/:uid", checkToken, async (req, res) => {
   }
 });
 
+router.put("/updateUserModules", checkToken, async (req, res) => {
+  try {
+    const modulesArr = req.body;
+    // console.log("modulesArr", modulesArr);
+    await Promise.all(
+      modulesArr.map(async mod => {
+        const updateData = {
+          // id: mod.moduleId,
+          name: mod.name || null,
+          subName: mod.subName || null,
+          userId: mod.userId || null,
+          comment: mod.comment || null,
+          usingStock: mod.usingStock || null,
+          mathModule: mod.mathModule || null
+        };
+        const record = await Modules.update(updateData, {
+          where: { id: mod.moduleId }
+        });
+        switch (record[0]) {
+          case 0:
+            const result = await Modules.build(mod).save();
+            console.log(record[0], "success create", result.dataValues);
+            break;
+          case 1:
+            console.log(record[0], "success update", mod);
+            break;
+          default:
+            throw Error("!!");
+        }
+      })
+    );
+    res.status(200).json(modulesArr);
+  } catch (e) {
+    res.send(e);
+  }
+});
+
 router.get("/chips", async (req, res) => {
   try {
     const chips = await Chips.findAll();
-    res.send(chips);
+    res.status(200).send(chips);
   } catch {
     res.send({
       error: "chips not found"
@@ -108,57 +91,64 @@ router.post("/getChips", async (req, res) => {
 
   Promise.all(promises).then(async () => {
     const updatedChips = await Chips.findAll();
-    res.send(updatedChips);
+    res.status(200).send(updatedChips);
   });
 });
 
-router.post("/updateModuleHeaderChips/:moduleId", async (req, res) => {
-  await Header.destroy({
-    where: {
-      moduleId: req.body.moduleId
-    }
-  });
-
-  let promises = [];
-
-  req.body.headerChips.forEach(header => {
-    promises.push(
-      Header.build({
-        headerName: header.headerName,
-        moduleId: req.body.moduleId
-      }).save()
-    );
-  });
-
-  Promise.all(promises).then(async () => {
-    const updatedHeader = await Header.findAll({
+router.put("/updateModuleHeaderChips", checkToken, async (req, res) => {
+  try {
+    await Header.destroy({
       where: {
         moduleId: req.body.moduleId
       }
     });
-    res.send(updatedHeader);
-  });
+
+    let promises = [];
+
+    req.body.headerChips.forEach(header => {
+      promises.push(
+        Header.build({
+          headerName: header.headerName,
+          moduleId: req.body.moduleId,
+          parentName: header.parentName,
+          columnId: header.columnId,
+          chipId: header.chipId
+        }).save()
+      );
+    });
+
+    Promise.all(promises).then(async () => {
+      const updatedHeader = await Header.findAll({
+        where: {
+          moduleId: req.body.moduleId
+        }
+      });
+      res.status(200).send(updatedHeader);
+    });
+  } catch (e) {
+    res.send(e);
+  }
 });
 
-router.post("/updateCommentInfo", checkToken, async (req, res) => {
+router.put("/updateCommentInfo", checkToken, async (req, res) => {
   try {
     const result = await Modules.update(
       { comment: req.body.commentInfo },
       { where: { id: req.body.moduleId } }
     );
-    res.send(result);
+    res.status(200).send("update comment success");
   } catch (err) {
     res.send("something go wrong");
   }
 });
 
-router.post("/updateMathModuleInfo", checkToken, async (req, res) => {
+router.put("/updateMathModuleInfo", checkToken, async (req, res) => {
   try {
     const results = await Modules.update(
       { mathModule: req.body.mathModuleInfo },
       { where: { id: req.body.moduleId } }
     );
-    res.send(results);
+    res.status(200).send("update mathmodule success");
   } catch (err) {
     res.send("something go wrong");
   }

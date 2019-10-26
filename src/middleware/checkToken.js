@@ -3,7 +3,7 @@ const config = require("config");
 const SECRET = config.get("SECRET");
 
 let checkToken = (req, res, next) => {
-  let token = req.headers["Authorization"]; // Express headers are auto converted to lowercase
+  let token = req.headers.authorization; // Express headers are auto converted to lowercase
 
   if (token) {
     next();
