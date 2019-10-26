@@ -7,11 +7,11 @@ const { User } = require("../db/model/User");
 const { Stocks } = require("../db/model/Stocks");
 const { Header } = require("../db/model/Header");
 
-router.get("/userModules/:uid", checkToken, async (req, res) => {
+router.get("/userModules", checkToken, async (req, res) => {
   try {
     const modules = await Modules.findAll({
       where: {
-        userId: req.params.uid
+        userId: req.body.userId
       },
       include: [
         {
@@ -49,7 +49,7 @@ router.put("/updateUserModules", checkToken, async (req, res) => {
         });
         switch (record[0]) {
           case 0:
-            const result = await Modules.build(mod).save();
+            const result = await Modules.build(updateData).save();
             console.log(record[0], "success create", result.dataValues);
             break;
           case 1:
