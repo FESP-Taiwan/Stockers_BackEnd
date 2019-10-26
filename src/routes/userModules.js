@@ -95,35 +95,39 @@ router.post("/getChips", async (req, res) => {
   });
 });
 
-router.post("/updateModuleHeaderChips", checkToken, async (req, res) => {
-  await Header.destroy({
-    where: {
-      moduleId: req.body.moduleId
-    }
-  });
-
-  let promises = [];
-
-  req.body.headerChips.forEach(header => {
-    promises.push(
-      Header.build({
-        headerName: header.headerName,
-        moduleId: req.body.moduleId,
-        parentName: header.parentName,
-        columnId: header.columnId,
-        chipId: header.chipId
-      }).save()
-    );
-  });
-
-  Promise.all(promises).then(async () => {
-    const updatedHeader = await Header.findAll({
+router.put("/updateModuleHeaderChips", checkToken, async (req, res) => {
+  try {
+    await Header.destroy({
       where: {
         moduleId: req.body.moduleId
       }
     });
-    res.status(200).send(updatedHeader);
-  });
+
+    let promises = [];
+
+    req.body.headerChips.forEach(header => {
+      promises.push(
+        Header.build({
+          headerName: header.headerName,
+          moduleId: req.body.moduleId,
+          parentName: header.parentName,
+          columnId: header.columnId,
+          chipId: header.chipId
+        }).save()
+      );
+    });
+
+    Promise.all(promises).then(async () => {
+      const updatedHeader = await Header.findAll({
+        where: {
+          moduleId: req.body.moduleId
+        }
+      });
+      res.status(200).send(updatedHeader);
+    });
+  } catch (e) {
+    res.send(e);
+  }
 });
 
 router.put("/updateCommentInfo", checkToken, async (req, res) => {
