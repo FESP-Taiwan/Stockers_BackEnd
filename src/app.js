@@ -17,7 +17,6 @@ app.get("/", (req, res) => {
 });
 app.use("/", require("./routes/login"));
 app.use("/stocker", require("./routes/stocker"));
-app.use("/postmodules", require("./routes/modules"));
 app.use("/modules", require("./routes/userModules"));
 require("./db/model/relation");
 const server = new ApolloServer({
