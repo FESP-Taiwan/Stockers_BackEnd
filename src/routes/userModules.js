@@ -7,11 +7,11 @@ const { User } = require("../db/model/User");
 const { Stocks } = require("../db/model/Stocks");
 const { Header } = require("../db/model/Header");
 
-router.get("/userModules", checkToken, async (req, res) => {
+router.get("/userModules/:uid", checkToken, async (req, res) => {
   try {
     const modules = await Modules.findAll({
       where: {
-        userId: req.body.userId
+        userId: req.params.uid
       },
       include: [
         {
