@@ -94,6 +94,7 @@ function industryStickers(res){
     db_obj = client.db("StockPrice");
     var d = new Date();
     d.setMonth(d.getMonth() - 2);
+    d.setDate(0);
     db_obj.collection("twse").aggregate([
         {$match:{date:{$gte: d}}},
             {
