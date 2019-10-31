@@ -31,8 +31,15 @@ router.get("/userModules/:uid", checkToken, async (req, res) => {
 
 router.put("/updateUserModules", checkToken, async (req, res) => {
   try {
-    const modulesArr = req.body;
-    // console.log("modulesArr", modulesArr);
+    const modulesArr = req.body.userModulesUpdated;
+    const updatedStock = await Stocks.update(
+      {
+        alertion: req.body.stockAlertion
+      },
+      {
+        where: { companyNumber: req.body.stockNumber }
+      }
+    );
     await Promise.all(
       modulesArr.map(async mod => {
         const updateData = {
@@ -60,6 +67,7 @@ router.put("/updateUserModules", checkToken, async (req, res) => {
         }
       })
     );
+
     res.status(200).json(modulesArr);
   } catch (e) {
     res.send(e);
