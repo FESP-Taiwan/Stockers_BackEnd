@@ -57,10 +57,10 @@ router.put("/updateUserModules", checkToken, async (req, res) => {
         switch (record[0]) {
           case 0:
             const result = await Modules.build(updateData).save();
-            console.log(record[0], "success create", result.dataValues);
+            console.log(record[0], "success create!", result.dataValues);
             break;
           case 1:
-            console.log(record[0], "success update", mod);
+            console.log(record[0], "success update!", mod);
             break;
           default:
             throw Error("!!");
