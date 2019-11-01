@@ -1,8 +1,10 @@
 function info(req,res,next){
     res.header("Content-Type",'application/json');
     res.header("Access-Control-Allow-Origin",'*');
+    console.log("================")
     console.log("Path: "+req.path);
-    console.log(`Body: ${((req.body.size>0))? req.body:"empty"}`);
+    console.log(`Body: ${((req.body.size>0))? req.body||req.params||req.query:"empty"}`);
+    console.log("================")
     next();
 }
 function packdata(params){

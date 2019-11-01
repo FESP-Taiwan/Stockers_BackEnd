@@ -147,7 +147,10 @@ router.get("/industryStickers", (req, res) => {
 // router.get('/industry',tools.info,(req,res)=>{
 //     db.industry(res);
 // })
-
+router.get("/seasonPrice/:company_no", (req,res)=>{
+  console.log(req.params.company_no);
+  db.seasonPrice(req.params.company_no,res);
+})
 // 靜態第三個
 // GET
 // stocker/individualStock/2330
