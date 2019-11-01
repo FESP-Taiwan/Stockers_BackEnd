@@ -480,7 +480,73 @@ async function individualStock(ticker_id,res){
         renderJson(res, rejected);
     }
 }
+async function seasonPrice(company_no, res){
+    //可以跟你要最近一年以季為單位區分的收盤價嗎
+    var prices = await client.db("StockPrice").collection("twse").aggregate([
+        {
+            $match:{
+              stockno: company_no,
+            }
+        },
+        {
+            $project:{
+                _id: "$stockno",
+                close_id: "$_id",
+                date: "$date",
+                isFirst:{ $eq:[{$dayOfMonth:"$date"}, 5]},
+                // isSeasonMonth:{ $eq:[{$month:"$date"}, 3]},
+                isSeasonMonth:{$or:[{ $eq:[{$month:"$date"}, 3]}, { $eq:[{$month:"$date"}, 6]},{ $eq:[{$month:"$date"}, 9]},{ $eq:[{$month:"$date"}, 12]}]},
+                close: "$close"
+            },
+        },
+        {
+             $match:{
+                 isFirst:true,
+                 isSeasonMonth:true
+             }
+        },
+        {
+          $project:{
+              _id: "$_id",
+              close_id: "$close_id",
+              date: "$date",
+              year: {$year:"$date"},
+              close: "$close"
+          }
+       },
 
+       {
+           $group:{
+              _id: {
+                  stockno:"$_id",
+                  year:"$year"
+                },
+                seasonalClose:{
+                  $push:{
+                    id:"$close_id",
+                    date: "$date",
+                    close: "$close"
+                  }
+                }
+           }
+       },
+       {
+        $sort:{
+            "_id.year":1
+        }
+       },
+       {
+        $group:{
+              _id:"$_id.stockno",
+              Inyear:{$push:{
+                year:"$_id.year",
+                seasonalClose:"$seasonalClose"
+              }}
+        }
+       },
+    ]).toArray()
+    clog(prices);
+}
 module.exports = {
    connect_mongo,
    list_collections,
@@ -493,4 +559,5 @@ module.exports = {
    industryStickers,
    industry,
    individualStock,
+   seasonPrice,
 };
