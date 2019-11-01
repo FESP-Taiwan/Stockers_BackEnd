@@ -13,7 +13,7 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.get("/", (req, res) => {
-  res.send('<a href="http://localhost:5000/test">click me</a>');
+  res.send('<a href="/test">click me</a>');
 });
 app.use("/", require("./routes/login"));
 app.use("/stocker", require("./routes/stocker"));
