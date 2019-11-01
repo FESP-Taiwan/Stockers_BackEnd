@@ -493,7 +493,8 @@ async function seasonPrice(company_no, res){
                 _id: "$stockno",
                 close_id: "$_id",
                 date: "$date",
-                isFirst:{ $eq:[{$dayOfMonth:"$date"}, 1]},
+                isFirst:{ $eq:[{$dayOfMonth:"$date"}, 5]},
+                // isSeasonMonth:{ $eq:[{$month:"$date"}, 3]},
                 isSeasonMonth:{$or:[{ $eq:[{$month:"$date"}, 3]}, { $eq:[{$month:"$date"}, 6]},{ $eq:[{$month:"$date"}, 9]},{ $eq:[{$month:"$date"}, 12]}]},
                 close: "$close"
             },
@@ -558,5 +559,5 @@ module.exports = {
    industryStickers,
    industry,
    individualStock,
-   seasonPrice
+   seasonPrice,
 };

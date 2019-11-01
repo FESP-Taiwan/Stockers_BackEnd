@@ -151,6 +151,10 @@ router.get("/seasonPrice/:company_no", (req,res)=>{
   console.log(req.params.company_no);
   db.seasonPrice(req.params.company_no,res);
 })
+// router.get("/test/:company_no",(req,res)=>{
+//   console.log(req.params.company_no);
+//   db.test(req.params.company_no,res);
+// })
 // 靜態第三個
 // GET
 // stocker/individualStock/2330
