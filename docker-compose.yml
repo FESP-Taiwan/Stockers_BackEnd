@@ -41,6 +41,7 @@ services:
       dockerfile: dev.Dockerfile
     image: backend
     container_name: Web_backend
+    restart: always
     environment:
       - DB_SERVER=mysql
       - DB_PORT=3306
