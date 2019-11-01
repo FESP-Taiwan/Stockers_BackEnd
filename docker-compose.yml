@@ -1,6 +1,14 @@
 version: "3"
 
 services:
+  nginx:
+    image: nginx:alpine
+    volumes:
+      - ./nginx:/etc/nginx/conf.d
+    ports:
+      - 3001:3001
+    depends_on:
+      - app
   myadmin:
     image: phpmyadmin/phpmyadmin
     container_name: php_myadmin_backend
