@@ -1,14 +1,15 @@
 version: "3"
 
 services:
-  nginx:
-    image: nginx:alpine
-    volumes:
-      - ./nginx:/etc/nginx/conf.d
-    ports:
-      - 6000:5000
-    depends_on:
-      - app
+  # nginx:
+  #   image: nginx:alpine
+  #   volumes:
+  #     - ./nginx:/etc/nginx/conf.d
+  #     - ./nginx/ssl:/etc/nginx/ssl
+  #   ports:
+  #     - 6000:5000
+  #   depends_on:
+  #     - app
   myadmin:
     image: phpmyadmin/phpmyadmin
     container_name: php_myadmin_backend
@@ -56,3 +57,5 @@ services:
       - 5000:5000
     depends_on:
       - mysql
+    expose:
+      - 5000
