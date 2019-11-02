@@ -7,14 +7,15 @@
     "start": "node src/app.js",
     "dev": "nodemon src/app.js",
     "start:prod": "cross-env NODE_ENV=prod pm2 start pm2.js src/app.js",
-    "fontend": "docker-compose  up --build",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "frontend": "docker-compose  up --build --force-recreate",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "docker": "docker-compose  up -d --build --force-recreate",
+    "stop": "docker-compose down"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@okgrow/graphql-scalars": "^0.4.6",
     "apollo-server": "^2.9.6",
     "apollo-server-express": "^2.9.6",
     "bcrypt": "^3.0.6",
@@ -33,8 +34,9 @@
     "passport-github": "^1.1.0",
     "passport-google-oauth": "^2.0.0",
     "passport-google-oauth20": "^2.0.0",
-    "sequelize": "^5.19.5",
-    "uuid": "^3.3.3"
+    "sequelize": "^5.16.0",
+    "uuid": "^3.3.3",
+    "mongodb": "^3.3.2"
   },
   "devDependencies": {
     "nodemon": "^1.19.3"

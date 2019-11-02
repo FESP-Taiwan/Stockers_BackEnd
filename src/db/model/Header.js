@@ -9,7 +9,13 @@ let Header = sequelize.define(
   "header",
   {
     headerName: Sequelize.STRING,
-    moduleId: Sequelize.INTEGER
+    parentName: {
+      type: Sequelize.STRING,
+      allowNull: true
+    },
+    moduleId: Sequelize.INTEGER,
+    columnId: Sequelize.INTEGER,
+    chipId: Sequelize.INTEGER
   },
   {
     charset: "utf8mb4",
@@ -18,7 +24,8 @@ let Header = sequelize.define(
 );
 
 Header.sync().then(() => {
-  console.log("Header table created");
+  console.log("Header table created!");
 });
 
 module.exports = { Header };
+``;

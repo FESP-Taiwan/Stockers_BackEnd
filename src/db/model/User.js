@@ -4,6 +4,7 @@ const { database, username, password } = config.get("mysql");
 const sequelize = new Sequelize(database, username, password, {
   ...config.get("mysqlCon")
 });
+const Modules = require("./Modules");
 
 let User = sequelize.define(
   "user",
@@ -32,24 +33,8 @@ let User = sequelize.define(
   }
 );
 
-// let OauthUser = sequelize.define('Oauthuser',{
-//    userId: {
-//       type: Sequelize.STRING,
-//       primaryKey: true
-//    },
-//    name: Sequelize.STRING
-// },{
-//     charset: 'utf8mb4',
-//     collate: 'utf8mb4_general_ci'
-//   })
-
 User.sync().then(() => {
   console.log("user table created");
 });
-
-// OauthUser.sync().then(() => {
-//     console.log('oauth user table created');
-// })
-// sync 相當於把model跟db同步
 
 module.exports = { User };
