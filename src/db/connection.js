@@ -1,7 +1,7 @@
 const Sequelize = require("sequelize");
 const config = require("config");
 const { database, username, password } = config.get("mysql");
-const c = new Sequelize(database, username, password, {
+const sequelize = new Sequelize(database, username, password, {
   ...config.get("mysqlCon")
 });
 sequelize
@@ -11,8 +11,5 @@ sequelize
   })
   .catch(err => {
     console.error("Unable to connect to the database:", err);
-  })
-  .finally(() => {
-    sequelize.close();
   });
-module.exports = { c };
+module.exports = { sequelize };

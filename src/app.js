@@ -7,7 +7,8 @@ const { typeDefs, resolvers } = require("./schemas/index");
 const config = require("config"); // require('dotenv').config()
 
 const PORT = process.env.PORT || 5000;
-
+const createTable = require("./db/model/relation");
+createTable().then(r => console.log(r));
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
@@ -18,7 +19,7 @@ app.get("/", (req, res) => {
 app.use("/", require("./routes/login"));
 app.use("/stocker", require("./routes/stocker"));
 app.use("/modules", require("./routes/userModules"));
-require("./db/model/relation");
+
 const server = new ApolloServer({
   typeDefs,
   resolvers,

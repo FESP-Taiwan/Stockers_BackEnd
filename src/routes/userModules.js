@@ -1,11 +1,13 @@
 const express = require("express");
 const router = express.Router();
-const { Chips } = require("../db/model/Chip");
-const { Modules } = require("../db/model/Modules");
-const { checkToken } = require("../middleware/checkToken");
 const { User } = require("../db/model/User");
 const { Stocks } = require("../db/model/Stocks");
+const { Modules } = require("../db/model/Modules");
 const { Header } = require("../db/model/Header");
+const { Chips } = require("../db/model/Chip");
+
+const { checkToken } = require("../middleware/checkToken");
+
 
 router.get("/userModules/:uid", checkToken, async (req, res) => {
   try {

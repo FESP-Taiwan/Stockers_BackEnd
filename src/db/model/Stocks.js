@@ -1,9 +1,7 @@
 const Sequelize = require("sequelize");
 const config = require("config");
 const { database, username, password } = config.get("mysql");
-const sequelize = new Sequelize(database, username, password, {
-  ...config.get("mysqlCon")
-});
+const { sequelize } = require("../connection");
 
 let Stocks = sequelize.define(
   "stock",
@@ -20,9 +18,4 @@ let Stocks = sequelize.define(
     collate: "utf8mb4_general_ci"
   }
 );
-
-Stocks.sync().then(() => {
-  console.log("Stocks table created");
-});
-
 module.exports = { Stocks };

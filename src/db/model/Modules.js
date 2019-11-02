@@ -1,9 +1,7 @@
 const Sequelize = require("sequelize");
 const config = require("config");
 const { database, username, password } = config.get("mysql");
-const sequelize = new Sequelize(database, username, password, {
-  ...config.get("mysqlCon")
-});
+const { sequelize } = require("../connection");
 
 let Modules = sequelize.define(
   "module",
@@ -23,10 +21,5 @@ let Modules = sequelize.define(
     collate: "utf8mb4_general_ci"
   }
 );
-
-Modules.sync().then(() => {
-  console.log("Modules table created");
-});
-// sync 相當於把model跟db同步
 
 module.exports = { Modules };
