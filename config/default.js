@@ -17,6 +17,11 @@ module.exports = {
   SECRET: "testsecret",
   SALT_ROUNDS: 8,
   login: {
+    fb: {
+      FB_CLIENT_ID: "501726963963124",
+      FB_CLIENT_SECRET: "50ae79e17e7c781f3d8abfd5d91f7c37",
+      FB_CALLBACK_URL: "http://3.219.220.166:5000/auth/facebook/callback"
+    },
     google: {
       GOOGLE_CLIENT_ID:
         "255901266837-gg8jodm0dfptjjb7hk3h4buio59ma1kt.apps.googleusercontent.com",
