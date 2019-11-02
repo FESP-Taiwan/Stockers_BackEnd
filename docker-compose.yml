@@ -34,8 +34,8 @@ services:
       - MYSQL_ROOT_PASSWORD=root
       - MYSQL_USER=dev
       - MYSQL_PASSWORD=dev
-    volumes:
-      - db-data:/var/lib/mysql
+    # volumes:
+    #   - db-data:/var/lib/mysql
     ports:
       - "3306"
   app:
@@ -61,6 +61,6 @@ services:
       - mysql
     expose:
       - 5000
-volumes:
-  db-data:
-    driver: local
+# volumes:
+#   db-data:
+#     driver: local
