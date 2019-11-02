@@ -493,15 +493,14 @@ async function seasonPrice(company_no, res){
                 _id: "$stockno",
                 close_id: "$_id",
                 date: "$date",
-                isFirst:{ $eq:[{$dayOfMonth:"$date"}, 5]},
-                // isSeasonMonth:{ $eq:[{$month:"$date"}, 3]},
+                // isFirst:{ $eq:[{$dayOfMonth:"$date"}, 5]},
                 isSeasonMonth:{$or:[{ $eq:[{$month:"$date"}, 3]}, { $eq:[{$month:"$date"}, 6]},{ $eq:[{$month:"$date"}, 9]},{ $eq:[{$month:"$date"}, 12]}]},
                 close: "$close"
             },
         },
         {
              $match:{
-                 isFirst:true,
+                //  isFirst:true,
                  isSeasonMonth:true
              }
         },
@@ -514,38 +513,134 @@ async function seasonPrice(company_no, res){
               close: "$close"
           }
        },
-
        {
            $group:{
               _id: {
                   stockno:"$_id",
                   year:"$year"
                 },
-                seasonalClose:{
-                  $push:{
-                    id:"$close_id",
-                    date: "$date",
-                    close: "$close"
-                  }
-                }
-           }
-       },
-       {
-        $sort:{
-            "_id.year":1
-        }
-       },
-       {
-        $group:{
-              _id:"$_id.stockno",
-              Inyear:{$push:{
+                "q1":{
+                    $push:{
+                        $cond:[
+                            {$eq:[{$month:"$date"},3]},
+                              {id:"$close_id", data:"$date", close: "$close"},
+                              null
+                             ],
+                        }
+                   },
+                   "q2":{
+                    $push:{
+                        $cond:[
+                            {$eq:[{$month:"$date"},6]},
+                              {id:"$close_id", data:"$date", close: "$close"},
+                              null
+                             ],
+                        }
+                   },
+                   "q3":{
+                    $push:{
+                        $cond:[
+                            {$eq:[{$month:"$date"},9]},
+                              {id:"$close_id", data:"$date", close: "$close"},
+                              null
+                             ],
+                        }
+                   },
+                   "q4":{
+                    $push:{
+                        $cond:[
+                            {$eq:[{$month:"$date"},12]},
+                              {id:"$close_id", data:"$date", close: "$close"},
+                              null
+                             ],
+                        }
+                   },
+            },
+
+        },
+        // {
+
+        // }
+        {
+            $project:{
+                _id:"$_id.stockno",
                 year:"$_id.year",
-                seasonalClose:"$seasonalClose"
-              }}
+                q1:{
+                    $filter: {
+                        input: "$q1",
+                        as: "q",
+                        cond: { $ne: [ "$$q",null] },
+
+                     }
+                },
+                q2:{
+                    $filter: {
+                        input: "$q2",
+                        as: "q",
+                        cond: { $ne: [ "$$q",null] },
+
+                     }
+                },
+                q3:{
+                    $filter: {
+                        input: "$q3",
+                        as: "q",
+                        cond: { $ne: [ "$$q",null] },
+
+                     }
+                },
+                q4:{
+                    $filter: {
+                        input: "$q4",
+                        as: "q",
+                        cond: { $ne: [ "$$q",null] },
+
+                     }
+                }
+            }
         }
-       },
+        // {
+        //     $group:{
+        //        _id: {
+        //            stockno:"$_id",
+        //            year:"$year"
+        //          },
+        //          "q1":{
+        //              $push:{
+        //                  $cond:[
+        //                      {$eq:[{$month:"$date"},3]},
+        //                        {id:"$close_id", data:"$date", close: "$close"},
+        //                        null
+        //                       ],
+        //                  }
+        //             },
+        //          }
+        //  },
+        // {
+        //     $match:{
+        //         "q1.isq1":true,
+        //         "q2.isq2":true,
+        //         "q3.isq3":true,
+        //         "q4.isq4":true
+        //     }
+        // }
+    //    {
+    //     $sort:{
+    //         "_id.year":1
+    //     }
+    //    },
+    //    {
+    //     $group:{
+    //           _id:"$_id.stockno",
+    //           Inyear:{$push:{
+    //             year:"$_id.year",
+    //             seasonalClose:"$seasonalClose"
+    //           }}
+    //     }
+    //    },
     ]).toArray()
     clog(prices);
+    renderJson(res,prices);
 }
 module.exports = {
    connect_mongo,
