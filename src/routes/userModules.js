@@ -32,6 +32,18 @@ router.get("/userModules/:uid", checkToken, async (req, res) => {
 router.put("/updateUserModules", checkToken, async (req, res) => {
   try {
     const modulesArr = req.body.userModulesUpdated;
+    const user = await User.findAll({
+      where: {
+        id: modulesArr[0].userId
+      }
+    });
+    if (user.length > 0) {
+      console.log("test", modulesArr[0].userId);
+    } else {
+      console.log("test", modulesArr[0].userId);
+      throw new Error("使用者尚未建立");
+    }
+
     const updatedStock = await Stocks.update(
       {
         alertion: req.body.stockAlertion
@@ -40,6 +52,33 @@ router.put("/updateUserModules", checkToken, async (req, res) => {
         where: { companyNumber: req.body.stockNumber }
       }
     );
+
+    //Comparison module id
+    let newModuleIdArr = []; //input moudle id
+    modulesArr.map(mod => {
+      newModuleIdArr.push(mod.moduleId);
+    });
+    console.log("new", newModuleIdArr);
+    //list all module
+    let oldModuleIdArrTemp = await Modules.findAll({
+      attributes: ["id"],
+      where: {
+        userid: modulesArr[0].userId
+      }
+    });
+    let oldModuleIdArr = [];
+    oldModuleIdArrTemp.map(item => {
+      oldModuleIdArr.push(item.dataValues.id);
+    });
+    console.log("oldmodule", oldModuleIdArr);
+    let deleteModule = [];
+    oldModuleIdArr.map(item => {
+      if (newModuleIdArr.indexOf(item) === -1) {
+        deleteModule.push(item);
+      }
+    });
+    console.log("delete", deleteModule);
+    await Modules.destroy({ where: { id: deleteModule } });
     await Promise.all(
       modulesArr.map(async mod => {
         const updateData = {
@@ -56,21 +95,32 @@ router.put("/updateUserModules", checkToken, async (req, res) => {
         });
         switch (record[0]) {
           case 0:
-            const result = await Modules.build(updateData).save();
+            const result = await Modules.create(updateData);
+            delete mod.moduleId;
+            const header = await Header.bulkCreate(mod.headers);
+            //await Modules.setHeaders(header);
             console.log(record[0], "success create!", result.dataValues);
             break;
           case 1:
             console.log(record[0], "success update!", mod);
             break;
           default:
-            throw Error("!!");
+            throw new Error("!!");
         }
       })
     );
+    //list result
+    let currentModule = await Modules.findAll({
+      include: [Header],
+      where: {
+        userid: modulesArr[0].userId
+      }
+    });
+    //console.log(currentModule);
 
-    res.status(200).json(modulesArr);
+    res.status(200).json(currentModule);
   } catch (e) {
-    res.send(e);
+    res.send(e.stack);
   }
 });
 
